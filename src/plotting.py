@@ -12,7 +12,7 @@ def plot_train_errors(history, block=True):
 def plot_dataset(train_set, predictions):
     plot_size=len(train_set[0])
     pred_size=len(predictions)
-    aa=[x for x in range(1000)]
+    aa=[x for x in range(10000)]
 
     plt.plot(aa[:plot_size], train_set[0][:plot_size], marker='.', label="actual")
     plt.plot(aa[:pred_size], predictions[:,0][:pred_size], 'r', label="prediction")
