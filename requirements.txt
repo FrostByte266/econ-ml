@@ -1,0 +1,6 @@
+pandas
+datapackage
+matplotlib
+sklearn
+seaborn
+tqdm
