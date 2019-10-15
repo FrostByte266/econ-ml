@@ -18,14 +18,13 @@ import plotting
 
 # df = pd.read_csv('/data/corn2013-2017.txt', parse_dates=['date']).dropna()
 # df = pd.read_csv('/data/daily_csv.csv', parse_dates=['date']).dropna()
-df = pd.read_csv('/data/exchange.csv', parse_dates=['date'], index_col='country').dropna()
-df = df.loc['China']
+df = pd.read_csv('/data/exchange.csv', parse_dates=['date'], index_col='country').dropna().loc['Japan']
 print(df)
 dataset = df.price.values
 dataset, scaler = preprocessing.normalize_dataframe(dataset)
 train, test = preprocessing.split_dataset(dataset, ratio=0.6)
     
-look_back = 30
+look_back = 100
 X_train, Y_train = preprocessing.create_dataset(train, look_back)
 X_test, Y_test = preprocessing.create_dataset(test, look_back)
 
@@ -34,9 +33,9 @@ X_test, Y_test = preprocessing.create_dataset(test, look_back)
 X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
 X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
 
-model = networks.build_model(X_train.shape)
+model = networks.build_model(X_train.shape, neurons=256, layers=3)
 history = model.fit(X_train, Y_train, epochs=30, batch_size=64, validation_data=(X_test, Y_test), 
-                    verbose=1, shuffle=False, callbacks=[EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)])
+                    verbose=1, shuffle=False, callbacks=[EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)])
 
 train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
@@ -58,9 +57,9 @@ for i, item in enumerate(predictions):
     cur = item[0]
     previous = predictions[i-1][0] if i > 0 else test_predict[-(num_predictions+1):][0][0]
     delta_percent = ((cur - previous) / previous) * 100
-    print(f'Current predicted price 1 week from previous point ({previous:.2f}): {cur:.2f}, Delta: {delta_percent:.2f}%')
+    print(f'Current predicted price 1 week from previous point: {cur:.2f}, Delta: {delta_percent:.2f}%')
 
-# plotting.plot_train_errors(history)
+plotting.plot_train_errors(history)
 
 plotting.plot_dataset(Y_test, test_predict)
 # plotting.plot_dataset(Y_train, train_predict)
