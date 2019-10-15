@@ -1,3 +1,3 @@
 #!/bin/bash
 xhost +
-docker run -u $(id -u):$(id -g) --rm -it --gpus all --net=host -e DISPLAY -e TF_FORCE_ALLOW_GPU_GROWTH=true -v $PWD/data:/data/ -v $PWD/src:/src econ
+docker run -u $(id -u):$(id -g) --rm -it --gpus all --net=host -e DISPLAY -e TF_FORCE_ALLOW_GPU_GROWTH=true -v $PWD/data:/data/ -v $PWD/src:/src -v $PWD/logs:/logs econ:tf2
