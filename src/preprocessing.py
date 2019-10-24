@@ -9,8 +9,7 @@ def create_dataset(dataset, look_back=1):
     return np.array(X), np.array(Y)
 
 def create_next_seq(dataset, look_back=1):
-    X = [dataset[i:(i+look_back)] for i in range(len(dataset)-look_back-1)]
-    return np.array(X)
+    return np.array([dataset[-look_back:]])
 
 def split_dataset(dataset, ratio=0.8):
     train_size = int(len(dataset) * ratio)
