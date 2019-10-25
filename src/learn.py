@@ -39,11 +39,19 @@ history = model.fit(X_train, Y_train, epochs=10, batch_size=128, validation_data
 train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
 num_predictions = 100
-for i in trange(num_predictions, desc="Predicting"):
-    example = preprocessing.create_next_seq(test_predict, look_back=look_back)
-    example = np.reshape(example, (example.shape[0], 1, example.shape[1]))
-    pred = model.predict(example)
-    test_predict = np.append(test_predict, [pred[-1]], axis=0)
+# for i in trange(num_predictions, desc="Predicting"):
+#     example = preprocessing.create_next_seq(test_predict, look_back=look_back)
+#     example = np.reshape(example, (example.shape[0], 1, example.shape[1]))
+#     pred = model.predict(example)
+#     test_predict = np.append(test_predict, [pred[-1]], axis=0)
+
+pred_input = preprocessing.create_next_seq(test_predict, look_back=1)
+model.reset_states()
+for i in trange(num_predictions, desc='Predicting'):
+    prediction = model.predict(pred_input)
+    prediction = tf.squeeze(prediction, 0)
+    pred_input = tf.expand_dims([prediction], 0)
+    test_predict = np.append(test_predict, [prediction.numpy()], axis=0)
 
 # Undo normalization
 train_predict = scaler.inverse_transform(train_predict)
