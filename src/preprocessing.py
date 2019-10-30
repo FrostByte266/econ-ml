@@ -9,12 +9,12 @@ def create_dataset(dataset, look_back=1):
     return np.array(X), np.array(Y)
 
 def create_next_seq(dataset, look_back=1):
-    return np.array([dataset[-look_back:]])
+    X = dataset[-look_back:]
+    return np.expand_dims(np.reshape(np.array(X), (1, look_back)), axis=0)
 
 def split_dataset(dataset, ratio=0.8):
     train_size = int(len(dataset) * ratio)
-    test_size = len(dataset) - train_size
-    train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
+    train, test = dataset[:train_size], dataset[train_size:]
     return train, test
 
 def normalize_dataframe(df):

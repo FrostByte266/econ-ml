@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 def plot_train_errors(history, block=True):
     plt.plot(history.history['loss'], label='Train Loss')
-    plt.plot(history.history['val_loss'], label='Test Loss')
+    # plt.plot(history.history['val_loss'], label='Test Loss')
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epochs')
