@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-gpu-py3
+FROM tensorflow/tensorflow:nightly-gpu-py3
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update

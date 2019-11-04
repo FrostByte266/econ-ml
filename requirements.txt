@@ -1,4 +1,5 @@
 pandas
+PySimpleGUI
 datapackage
 matplotlib
 sklearn

@@ -9,7 +9,7 @@ def plot_train_errors(history, block=True):
     plt.legend(loc='upper right')
     plt.show(block=block)
 
-def plot_dataset(train_set, predictions):
+def plot_dataset(train_set, predictions, country=None):
     plot_size=len(train_set[0])
     pred_size=len(predictions)
     aa=[x for x in range(10000)]
@@ -18,4 +18,6 @@ def plot_dataset(train_set, predictions):
     plt.plot(aa[:pred_size], predictions[:,0][:pred_size], 'r', label="prediction")
 
     plt.legend(fontsize=15)
+    if country is not None:
+        plt.title(f'Exchange rates between US and {country.title()}')
     plt.show()
