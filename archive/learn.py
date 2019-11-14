@@ -57,7 +57,7 @@ dates = df.date.values
 dataset, scaler = preprocessing.normalize_dataframe(dataset)
 train, test = preprocessing.split_dataset(dataset, ratio=0.6)
     
-look_back = 2
+look_back = 30
 X_train, Y_train = preprocessing.create_dataset(train, look_back)
 X_test, Y_test = preprocessing.create_dataset(test, look_back)
 
@@ -66,6 +66,8 @@ X_test, Y_test = preprocessing.create_dataset(test, look_back)
 X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
 X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
 train_shape = X_train.shape
+
+# assert False
 
 X_train = tf.data.Dataset.from_tensor_slices((X_train, Y_train))
 
@@ -80,14 +82,15 @@ pred_model = networks.build_model(train_shape, neurons=64, layers=6, dropout_rat
 pred_model.set_weights(model.get_weights())
 
 test_predict = pred_model.predict(X_test)
-# num_predictions = 50
-# for i in trange(num_predictions, desc='Predicting'):
-#     # series = np.expand_dims(np.reshape(test_predict[-look_back:], (1, look_back)), axis=0)
-#     series = preprocessing.create_next_seq(test_predict, look_back=look_back)
-#     # assert False
-#     series = tf.data.Dataset.from_tensor_slices(series).batch(1)
-#     prediction = pred_model.predict(series)
-#     test_predict = np.append(test_predict, np.array([[prediction[-1][0]]]), axis=0)
+num_predictions = 50
+model.reset_states()
+for i in trange(num_predictions, desc='Predicting'):
+    # series = np.expand_dims(np.reshape(test_predict[-look_back:], (1, look_back)), axis=0)
+    series = preprocessing.create_next_seq(test_predict, look_back=look_back)
+    # assert False
+    series = tf.data.Dataset.from_tensor_slices(series).batch(1)
+    prediction = pred_model.predict(series)
+    test_predict = np.append(test_predict, np.array([[prediction[-1][0]]]), axis=0)
 
 # Undo normalization
 test_predict = scaler.inverse_transform(test_predict)
