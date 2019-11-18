@@ -3,9 +3,9 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
 def create_dataset(dataset, look_back=1):
-    dataset_range = range(len(dataset)-look_back-1)
+    dataset_range = range(len(dataset)-look_back*2-1)
     X = [dataset[i:(i+look_back), 0] for i in dataset_range]
-    Y = [dataset[i + look_back, 0] for i in dataset_range]
+    Y = [dataset[i + look_back:i+look_back*2, 0] for i in dataset_range]
     return np.array(X), np.array(Y)
 
 def create_next_seq(dataset, look_back=1):
