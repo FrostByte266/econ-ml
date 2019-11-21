@@ -24,16 +24,11 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 dataset = scaler.fit_transform(dataset)
 
 # Create X and Y sets
-# dataset, scaler = preprocessing.normalize_dataframe(dataset)
 train, test = preprocessing.split_dataset(dataset, ratio=0.6)
     
 seq_len = 50
 X_train, y_train = preprocessing.create_dataset(train, seq_len)
 X_test, y_test = preprocessing.create_dataset(test, seq_len)
-
-X_test_orig = X_test.copy()
-
-# assert False
 
 X_train = X_train.reshape((X_train.shape[0], seq_len, 1))
 X_test = X_test.reshape((X_test.shape[0], seq_len, 1))
@@ -53,7 +48,7 @@ training_model.add(GRU(neurons, return_sequences=True))
 training_model.add(GRU(neurons, return_sequences=True))
 training_model.add(Dense(1, activation='linear'))
 training_model.compile(loss='mean_squared_error', optimizer='adam')
-training_model.fit(X_train, y_train, epochs=1, batch_size=batch_sz, verbose=True, validation_data=(X_test, y_test))
+training_model.fit(X_train, y_train, epochs=10, batch_size=batch_sz, verbose=True, validation_data=(X_test, y_test))
 
 # Make prediction model
 prediction_model = Sequential()
@@ -70,22 +65,19 @@ prediction_model.reset_states()
 # Make the predictions
 predictions = prediction_model.predict(X_test)
 
-futureElement = np.expand_dims(predictions[-1], axis=0)
-# futureElement = predictions[-1]
+future_step = np.expand_dims(predictions[-1], axis=0)
 
-futureElements = np.empty(futureElement.shape)
-futureElements[0] = futureElement
-# futureElements.append(futureElement)
+future_steps = np.empty(future_step.shape)
+future_steps[0] = future_step
 
 for i in trange(20, desc='Making future predictions'):
-    futureElement = prediction_model.predict(futureElement)
-    futureElements = np.append(futureElements, futureElement, axis=0)
+    future_step = prediction_model.predict(future_step)
+    future_steps = np.append(future_steps, future_step, axis=0)
 
 # Undo scaling
 test = scaler.inverse_transform(test)
 X_test = scaler.inverse_transform(X_test.squeeze(axis=2))
-preds = scaler.inverse_transform(np.append(predictions, futureElements, axis=0).squeeze(axis=2))
-# preds = np.append(predictions, futureElements, axis=0).squeeze(axis=2)
+preds = scaler.inverse_transform(np.append(predictions, future_steps, axis=0).squeeze(axis=2))
 
 # Plot results
 plt.plot(np.array([i[-1] for i in X_test]), label='Real')
