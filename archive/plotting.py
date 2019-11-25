@@ -12,10 +12,10 @@ def plot_train_errors(history, block=True):
 def plot_dataset(train_set, predictions, country=None):
     plot_size=len(train_set[0])
     pred_size=len(predictions)
-    aa=[x for x in range(10000)]
+    x_axis=[x for x in range(10000)]
 
-    plt.plot(aa[:plot_size], train_set[0][:plot_size], label="actual")
-    plt.plot(aa[:pred_size], predictions[:,0][:pred_size], 'r', label="prediction")
+    plt.plot(x_axis[:plot_size], train_set[0][:plot_size], label="actual")
+    plt.plot(x_axis[:pred_size], predictions[:,0][:pred_size], 'r', label="prediction")
 
     plt.legend(fontsize=15)
     if country is not None:
